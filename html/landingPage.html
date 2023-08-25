@@ -12,6 +12,12 @@
       href="https://fonts.googleapis.com/css2?family=Jost&family=Open+Sans&family=Roboto&display=swap"
       rel="stylesheet"
     />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+      crossorigin="anonymous"
+    />
     <style>
       body {
         margin: 0;
@@ -21,16 +27,33 @@
     </style>
   </head>
   <body>
-    <nav class="header">
-      <div>
-        <a style="font-weight: bold">Simple Header</a>
-      </div>
-      <div>
-        <a>Home</a>
-        <a>Features</a>
-        <a>Pricing</a>
-        <a>FAQs</a>
-        <a>About</a>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Simple Header</a>
+        <div class="d-flex">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex flex-row gap-">
+            <li class="nav-item">
+              <a
+                class="nav-link btn btn-primary active"
+                aria-current="page"
+                href="#"
+                >Home</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-primary active" href="#">Features</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-primary active" href="#">Pricing</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-primary active" href="#">FAQs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-primary active" href="#">About</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
 
@@ -86,5 +109,10 @@
       <p>Copyright</p>
       <p>Designed by <a>BootstrapMade</a></p>
     </footer>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
