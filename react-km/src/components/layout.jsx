@@ -8,7 +8,9 @@ export default function Layout({ children }) {
           TEST
         </h1>
       </nav>
-      <div className="w-full h-full px-3 flex flex-col">{children}</div>
+      <div className="w-full h-full px-3 flex flex-col items-center">
+        {children}
+      </div>
     </div>
   );
 }
