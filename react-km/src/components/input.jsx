@@ -34,8 +34,22 @@ function Select(props) {
   );
 }
 
-function TextArea() {
-  return <textarea />;
+function TextArea(props) {
+  const { label, onChange, type, placeholder, value, defaultValue } = props;
+
+  return (
+    <div className="flex flex-col">
+      <label>{label}</label>
+      <textarea
+        className="border-2 rounded-md"
+        value={value}
+        defaultValue={defaultValue}
+        onChange={onChange}
+        type={type}
+        placeholder={placeholder}
+      />
+    </div>
+  );
 }
 
 export { Input, Select, TextArea }; // named export

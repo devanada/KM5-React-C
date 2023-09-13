@@ -7,24 +7,40 @@ import Layout from "../components/layout";
 import Button from "../components/button";
 // import Input from "../components/input"; import default
 
+import { useTitle, useFetchGet } from "../utils/hooks/customHooks";
+
 export default function Index() {
+  // const [state, updater] = useState(default value)
   const [isLoading2, setIsLoading2] = useState(false);
   const [isLoading3, setIsLoading3] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState("");
   const [datas, setDatas] = useState([]);
+  const [welcomeWords] = useState("WELCOME!");
+  const [data] = useFetchGet("https://jsonplaceholder.typicode.com/posts");
+  useTitle("Homepage");
 
   useEffect(() => {
     fetchData2();
   }, []);
 
+  useEffect(() => {
+    // console.log("TEST", isLoading);
+  }, [isLoading]);
+
   function fetchData() {
     setIsLoading(true);
+    setIsLoading2(true);
+    setIsLoading3(true);
     fetch("https://jsonplaceholder.typicode.com/posts")
       .then((result) => result.json())
       .then((response) => setDatas(response))
       .catch((error) => alert(error.toString()))
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        setIsLoading(false);
+        setIsLoading2(false);
+        setIsLoading3(false);
+      });
   }
 
   function fetchData2() {
@@ -36,6 +52,7 @@ export default function Index() {
       .finally(() => setIsLoading(false));
   }
 
+  // console.log(data);
   return (
     <Layout>
       <h1 className="text-3xl font-bold underline">Hello world!</h1>

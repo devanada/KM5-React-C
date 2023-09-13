@@ -120,6 +120,9 @@ class CreateProduct2 extends Component {
     super(props);
     this.state = {
       title: "",
+      isLoading: false,
+      isLoading2: false,
+      isLoading3: false,
     };
   }
 
@@ -132,6 +135,9 @@ class CreateProduct2 extends Component {
       // setState merupakan updater yang fungsinya untuk merubah nilai dari suatu state
       this.setState({
         title: "HELLO WORLD",
+        isLoading: true,
+        isLoading2: true,
+        isLoading3: true,
       });
     }, 2000);
   }
