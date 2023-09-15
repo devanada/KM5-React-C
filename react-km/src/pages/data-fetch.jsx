@@ -5,11 +5,14 @@ import { Input, TextArea } from "@/components/input";
 import Layout from "@/components/layout";
 import Button from "@/components/button";
 import Table from "@/components/table";
+import Swal from "@/utils/swal";
 
 export default function DataFetch() {
   const [posts, setPosts] = useState([]);
-  const [isReady, setIsReady] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [selectedPost, setSelectedPost] = useState("");
   const [titlePost, setTitlePost] = useState("");
   const [bodyPost, setBodyPost] = useState("");
 
@@ -18,6 +21,7 @@ export default function DataFetch() {
   }, []);
 
   function fetchData() {
+    // GET -> (url/endpoint, config)
     setIsReady(false);
     axios
       .get("https://jsonplaceholder.typicode.com/posts")
@@ -25,11 +29,26 @@ export default function DataFetch() {
         const { data } = response;
         setPosts(data);
       })
-      .catch((error) => alert(error.toString()))
+      .catch((error) =>
+        Swal.fire({
+          title: "Failed",
+          text: error.toString(),
+          showCancelButton: false,
+        })
+      )
       .finally(() => setIsReady(true));
   }
 
-  function handleSubmit(event) {
+  function isPostOrEdit(event) {
+    if (isEdit) {
+      handleEditPost(event);
+    } else {
+      handleSubmitPost(event);
+    }
+  }
+
+  function handleSubmitPost(event) {
+    // POST -> (url/endpoint, body, config)
     event.preventDefault();
     const body = {
       title: titlePost,
@@ -41,14 +60,74 @@ export default function DataFetch() {
       .then((response) => {
         setTitlePost("");
         setBodyPost("");
-        alert("Berhasil menambahkan data");
+        Swal.fire({
+          title: "Success",
+          text: "Berhasil menambahkan data",
+          showCancelButton: false,
+        });
       })
-      .catch((error) => alert(error.toString()));
+      .catch((error) =>
+        Swal.fire({
+          title: "Failed",
+          text: error.toString(),
+          showCancelButton: false,
+        })
+      );
+  }
+
+  function handleEditPost(event) {
+    // PUT -> (url/endpoint, body, config)
+    event.preventDefault();
+    const body = {
+      title: titlePost,
+      body: bodyPost,
+      userId: 1,
+    };
+    axios
+      .put(`https://jsonplaceholder.typicode.com/posts/${selectedPost}`, body)
+      .then((response) => {
+        setSelectedPost("");
+        setTitlePost("");
+        setBodyPost("");
+        setIsEdit(false);
+        Swal.fire({
+          title: "Success",
+          text: "Berhasil menambahkan data",
+          showCancelButton: false,
+        });
+      })
+      .catch((error) =>
+        Swal.fire({
+          title: "Failed",
+          text: error.toString(),
+          showCancelButton: false,
+        })
+      );
+  }
+
+  function handleDeletePost(id) {
+    // DELETE -> (url/endpoint, config)
+    axios
+      .delete(`https://jsonplaceholder.typicode.com/posts/${id}`)
+      .then(() => {
+        Swal.fire({
+          title: "Success",
+          text: "Berhasil menghapus post",
+          showCancelButton: false,
+        });
+      })
+      .catch((error) =>
+        Swal.fire({
+          title: "Failed",
+          text: error.toString(),
+          showCancelButton: false,
+        })
+      );
   }
 
   return (
     <Layout>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={isPostOrEdit}>
         <Input
           label="Title"
           type="text"
@@ -67,8 +146,22 @@ export default function DataFetch() {
         headers={["No", "Title", "Body"]}
         datas={posts}
         isReady={isReady}
-        onEditClick={(data) => console.log(`test ${data.title}`)}
-        onDeleteClick={(data) => console.log(`delete ${data.title}`)}
+        onEditClick={(data) => {
+          setIsEdit(true);
+          setTitlePost(data.title);
+          setBodyPost(data.body);
+          setSelectedPost(data.id);
+        }}
+        onDeleteClick={(data) =>
+          Swal.fire({
+            title: "Peringatan",
+            text: `Apakah anda yakin untuk menghapus postingan dengan judul ${data.title}?`,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              handleDeletePost(data.id);
+            }
+          })
+        }
       />
     </Layout>
   );
