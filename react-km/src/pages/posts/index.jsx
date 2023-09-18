@@ -6,6 +6,7 @@ import Layout from "@/components/layout";
 import Button from "@/components/button";
 import Table from "@/components/table";
 import Swal from "@/utils/swal";
+import { getPosts } from "@/utils/api/posts/api";
 
 export default function DataFetch() {
   const [posts, setPosts] = useState([]);
@@ -20,9 +21,10 @@ export default function DataFetch() {
     fetchData();
   }, []);
 
-  function fetchData() {
+  async function fetchData() {
     // GET -> (url/endpoint, config)
     setIsReady(false);
+    // -----===== CARA 1 =====-----
     axios
       .get("https://jsonplaceholder.typicode.com/posts")
       .then((response) => {
@@ -37,6 +39,10 @@ export default function DataFetch() {
         })
       )
       .finally(() => setIsReady(true));
+
+    // -----===== CARA 2 =====-----
+    const response = await getPosts();
+    console.log(response);
   }
 
   function isPostOrEdit(event) {

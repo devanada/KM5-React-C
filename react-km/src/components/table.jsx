@@ -1,4 +1,5 @@
 import { IoPencil, IoTrash } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 import React from "react";
 
 export default function Table(props) {
@@ -9,6 +10,7 @@ export default function Table(props) {
     onEditClick,
     onDeleteClick,
   } = props;
+  const navigate = useNavigate();
 
   return (
     <table className="table">
@@ -25,7 +27,9 @@ export default function Table(props) {
           datas.map((data) => (
             <tr key={data.id} className="hover">
               <td>{data.id}</td>
-              <td>{data.title}</td>
+              <td onClick={() => navigate(`/posts/${data.id}`)}>
+                {data.title}
+              </td>
               <td>{data.body}</td>
               <td className="flex gap-2">
                 <IoPencil onClick={() => onEditClick(data)} />

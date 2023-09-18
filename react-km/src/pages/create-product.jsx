@@ -1,18 +1,21 @@
 import React, { Component, useState, useEffect } from "react";
-import "../styles/App.css";
+import "@/styles/App.css";
 
-import Layout from "../components/layout";
-import { Input, Select } from "../components/input";
-import Button from "../components/button";
-import Table from "../components/table";
+import Layout from "@/components/layout";
+import { Input, Select } from "@/components/input";
+import Button from "@/components/button";
+import Table from "@/components/table";
+import { article } from "@/utils/constants/article";
+import { Radio } from "../components/input";
 
 // Functional component biasa disebut sebagai stateless component
 function CreateProduct1() {
-  const [title, setTitle] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [productName, setProductName] = useState("");
   const [productCategory, setProductCategory] = useState("");
+  const [productName, setProductName] = useState("");
+  const [language, setLanguage] = useState("id");
+  const [title, setTitle] = useState("");
   const [productPrice, setProductPrice] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState([]);
 
   /*
@@ -83,6 +86,11 @@ function CreateProduct1() {
 
   return (
     <Layout>
+      <p>{article.title[language]}</p>
+      <p>{article.description[language]}</p>
+      <button onClick={() => setLanguage(language == "id" ? "en" : "id")}>
+        Ubah
+      </button>
       <p>{isLoading ? "LOADING" : title}</p>
       <form onSubmit={handleSubmit}>
         <Input
@@ -152,3 +160,5 @@ class CreateProduct2 extends Component {
 }
 
 export { CreateProduct1, CreateProduct2 };
+
+export default CreateProduct1;

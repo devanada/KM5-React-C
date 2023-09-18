@@ -52,5 +52,16 @@ function TextArea(props) {
   );
 }
 
-export { Input, Select, TextArea }; // named export
+function Radio(props) {
+  const { label, onChange, value } = props;
+
+  return (
+    <>
+      <input type="radio" value={value} onChange={onChange} />
+      <label>{label}</label>
+    </>
+  );
+}
+
+export { Input, Select, TextArea, Radio }; // named export
 // export default Input // export default
