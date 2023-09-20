@@ -13,7 +13,7 @@ import { setAxiosConfig } from "../utils/api/axiosWithConfig";
 
 export default function Router() {
   // TODO: change this when authentication learned
-  const getToken = true;
+  const getToken = false;
 
   useEffect(() => {
     setAxiosConfig("", "https://jsonplaceholder.typicode.com");
@@ -26,7 +26,7 @@ export default function Router() {
     },
     {
       path: "/create-product",
-      element: !getToken ? <CreateProduct /> : <Navigate to="/" />, // <~ protected route
+      element: getToken ? <CreateProduct /> : <Navigate to="/" />, // <~ protected route
     },
     {
       path: "/posts",

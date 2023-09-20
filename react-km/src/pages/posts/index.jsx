@@ -1,5 +1,8 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import axios from "axios";
+import * as z from "zod";
 
 import { Input, TextArea } from "@/components/input";
 import Layout from "@/components/layout";
@@ -8,14 +11,27 @@ import Table from "@/components/table";
 import Swal from "@/utils/swal";
 import { getPosts } from "@/utils/api/posts/api";
 
+const schema = z.object({
+  title: z.string().min(1, { message: "Title is required" }),
+  body: z.string().min(10, { message: "Min length of body is 10 characters" }),
+});
+
 export default function DataFetch() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [selectedPost, setSelectedPost] = useState("");
-  const [titlePost, setTitlePost] = useState("");
-  const [bodyPost, setBodyPost] = useState("");
+
+  const {
+    reset,
+    setValue,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
 
   useEffect(() => {
     fetchData();
@@ -41,31 +57,28 @@ export default function DataFetch() {
       .finally(() => setIsReady(true));
 
     // -----===== CARA 2 =====-----
-    const response = await getPosts();
-    console.log(response);
+    // const response = await getPosts();
+    // console.log(response);
   }
 
-  function isPostOrEdit(event) {
+  function isPostOrEdit(data) {
     if (isEdit) {
-      handleEditPost(event);
+      handleEditPost(data);
     } else {
-      handleSubmitPost(event);
+      handleSubmitPost(data);
     }
   }
 
-  function handleSubmitPost(event) {
+  function handleSubmitPost(data) {
     // POST -> (url/endpoint, body, config)
-    event.preventDefault();
     const body = {
-      title: titlePost,
-      body: bodyPost,
+      ...data,
       userId: 1,
     };
     axios
       .post("https://jsonplaceholder.typicode.com/posts", body)
       .then((response) => {
-        setTitlePost("");
-        setBodyPost("");
+        reset();
         Swal.fire({
           title: "Success",
           text: "Berhasil menambahkan data",
@@ -81,24 +94,21 @@ export default function DataFetch() {
       );
   }
 
-  function handleEditPost(event) {
+  function handleEditPost(data) {
     // PUT -> (url/endpoint, body, config)
-    event.preventDefault();
     const body = {
-      title: titlePost,
-      body: bodyPost,
+      ...data,
       userId: 1,
     };
     axios
       .put(`https://jsonplaceholder.typicode.com/posts/${selectedPost}`, body)
       .then((response) => {
         setSelectedPost("");
-        setTitlePost("");
-        setBodyPost("");
+        reset();
         setIsEdit(false);
         Swal.fire({
           title: "Success",
-          text: "Berhasil menambahkan data",
+          text: "Berhasil merubah data",
           showCancelButton: false,
         });
       })
@@ -133,18 +143,20 @@ export default function DataFetch() {
 
   return (
     <Layout>
-      <form onSubmit={isPostOrEdit}>
+      <form onSubmit={handleSubmit(isPostOrEdit)}>
         <Input
+          register={register}
+          name="title"
           label="Title"
           type="text"
-          value={titlePost}
-          onChange={(event) => setTitlePost(event.target.value)}
+          error={errors.title?.message}
         />
         <TextArea
+          register={register}
+          name="body"
           label="Body"
           type="text"
-          value={bodyPost}
-          onChange={(event) => setBodyPost(event.target.value)}
+          error={errors.body?.message}
         />
         <Button label="Submit" type="submit" />
       </form>
@@ -154,8 +166,8 @@ export default function DataFetch() {
         isReady={isReady}
         onEditClick={(data) => {
           setIsEdit(true);
-          setTitlePost(data.title);
-          setBodyPost(data.body);
+          setValue("title", data.title);
+          setValue("body", data.body);
           setSelectedPost(data.id);
         }}
         onDeleteClick={(data) =>

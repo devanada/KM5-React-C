@@ -1,5 +1,13 @@
 import React from "react";
 
+/**
+ *
+ * @param {{
+ * label: string,
+ * onClick: Function,
+ * type: string
+ * }} props Props for the component
+ */
 export default function Button(props) {
   const { label, onClick, type } = props;
 

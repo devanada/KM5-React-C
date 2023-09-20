@@ -2,6 +2,16 @@ import { IoPencil, IoTrash } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 
+/**
+ *
+ * @param {{
+ * headers: Array,
+ * datas: Array,
+ * isReady: boolean,
+ * onEditClick: Function,
+ * onDeleteClick: Function
+ * }} props Props for the component
+ */
 export default function Table(props) {
   const {
     headers = [],

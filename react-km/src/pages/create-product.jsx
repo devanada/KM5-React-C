@@ -2,11 +2,10 @@ import React, { Component, useState, useEffect } from "react";
 import "@/styles/App.css";
 
 import Layout from "@/components/layout";
-import { Input, Select } from "@/components/input";
+import { Input, Radio, Select } from "@/components/input";
 import Button from "@/components/button";
 import Table from "@/components/table";
 import { article } from "@/utils/constants/article";
-import { Radio } from "../components/input";
 
 // Functional component biasa disebut sebagai stateless component
 function CreateProduct1() {
