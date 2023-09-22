@@ -7,7 +7,7 @@ import * as z from "zod";
 import { Input, TextArea } from "@/components/input";
 import Layout from "@/components/layout";
 import Button from "@/components/button";
-import Table from "@/components/table";
+import { TablePost } from "@/components/table";
 import Swal from "@/utils/swal";
 import { getPosts } from "@/utils/api/posts/api";
 
@@ -160,7 +160,7 @@ export default function DataFetch() {
         />
         <Button label="Submit" type="submit" />
       </form>
-      <Table
+      <TablePost
         headers={["No", "Title", "Body"]}
         datas={posts}
         isReady={isReady}

@@ -4,7 +4,7 @@ import "@/styles/App.css";
 import Layout from "@/components/layout";
 import { Input, Radio, Select } from "@/components/input";
 import Button from "@/components/button";
-import Table from "@/components/table";
+import { TableProduct } from "@/components/table";
 import { article } from "@/utils/constants/article";
 
 // Functional component biasa disebut sebagai stateless component
@@ -59,10 +59,18 @@ function CreateProduct1() {
   }, []);
 
   function fetchData() {
-    setTimeout(() => {
-      setTitle("HELLO WORLD");
-      setIsLoading(false);
-    }, 2000);
+    setProducts(getProducts());
+  }
+
+  function getProducts() {
+    const getItem = localStorage.getItem("products");
+
+    if (getItem) {
+      const parseProducts = JSON.parse(getItem);
+      return parseProducts;
+    }
+
+    return [];
   }
 
   // TODO: Fungsi ini beri validasi ketika semua input belum terisi maka data tidak di push ke tabel
@@ -78,6 +86,8 @@ function CreateProduct1() {
       const dupeProducts = [...products, product];
       setProducts(dupeProducts);
       // TODO: Data yang telah di input, silahkan di reset seperti semula
+
+      localStorage.setItem("products", JSON.stringify(dupeProducts));
     } else {
       alert("Input belum terisi semua");
     }
@@ -112,9 +122,10 @@ function CreateProduct1() {
         />
         <Button label="Submit" type="submit" />
       </form>
-      <Table
+      <TableProduct
         headers={["No", "Product Name", "Product Category", "Product Price"]}
         datas={products}
+        isReady={true}
       />
     </Layout>
   );

@@ -12,7 +12,8 @@ export default function Layout({ children }) {
           Homepage
         </Link>
         <div className="gap-3 flex">
-          <Link to="/create-product">Create Product</Link>
+          <Link to="/login">Login</Link>
+          <Link to="/products">Create Product</Link>
           <Link to="/posts">Data Fetch</Link>
         </div>
       </nav>
