@@ -13,6 +13,7 @@ import clsx from "clsx";
  * register: Function,
  * name: string,
  * error: string
+ * accept: string
  * }} props Props for the component
  */
 function Input(props) {
@@ -26,6 +27,7 @@ function Input(props) {
     register,
     name,
     error,
+    accept,
   } = props;
 
   return (
@@ -41,6 +43,7 @@ function Input(props) {
         onChange={onChange}
         type={type}
         placeholder={placeholder}
+        accept={accept}
         {...(register ? register(name) : {})}
       />
       {error && (

@@ -1,4 +1,5 @@
 import React, { Component, useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import "@/styles/App.css";
 
 import Layout from "@/components/layout";
@@ -6,16 +7,20 @@ import { Input, Radio, Select } from "@/components/input";
 import Button from "@/components/button";
 import { TableProduct } from "@/components/table";
 import { article } from "@/utils/constants/article";
+import { setProducts } from "@/utils/states/redux/reducers/reducer";
 
 // Functional component biasa disebut sebagai stateless component
 function CreateProduct1() {
+  const { products } = useSelector((state) => state.data);
+  const dispatch = useDispatch();
+
   const [productCategory, setProductCategory] = useState("");
   const [productName, setProductName] = useState("");
   const [language, setLanguage] = useState("id");
   const [title, setTitle] = useState("");
   const [productPrice, setProductPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [products, setProducts] = useState([]);
+  // const [products, setProducts] = useState([]);
 
   /*
   Ketika ada perubahan state pada saat side effect berjalan, maka terjadi sebuah re-render component.
@@ -54,24 +59,6 @@ function CreateProduct1() {
   }
  })
  */
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  function fetchData() {
-    setProducts(getProducts());
-  }
-
-  function getProducts() {
-    const getItem = localStorage.getItem("products");
-
-    if (getItem) {
-      const parseProducts = JSON.parse(getItem);
-      return parseProducts;
-    }
-
-    return [];
-  }
 
   // TODO: Fungsi ini beri validasi ketika semua input belum terisi maka data tidak di push ke tabel
   function handleSubmit(event) {
@@ -84,10 +71,9 @@ function CreateProduct1() {
         productPrice: productPrice,
       };
       const dupeProducts = [...products, product];
-      setProducts(dupeProducts);
       // TODO: Data yang telah di input, silahkan di reset seperti semula
 
-      localStorage.setItem("products", JSON.stringify(dupeProducts));
+      dispatch(setProducts(dupeProducts));
     } else {
       alert("Input belum terisi semua");
     }
@@ -105,7 +91,7 @@ function CreateProduct1() {
         <Input
           label="Product Name"
           type="text"
-          defaultValue={productName}
+          name="productName"
           onChange={(event) => setProductName(event.target.value)}
         />
         <Select
@@ -113,6 +99,13 @@ function CreateProduct1() {
           placeholder="Choose..."
           options={["Fruits", "Vegetable", "Dairy"]}
           onChange={(event) => setProductCategory(event.target.value)}
+        />
+        <Input
+          label="Product Image"
+          type="file"
+          // defaultValue={productPrice}
+          accept="image/*"
+          onChange={(event) => console.log(event.target.files[0])}
         />
         <Input
           label="Product Price"

@@ -3,6 +3,7 @@ import {
   RouterProvider,
   Navigate,
 } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { useEffect } from "react";
 
 import Index from "@/pages";
@@ -12,15 +13,24 @@ import DetailProduct from "@/pages/products/detail";
 import DataFetch from "@/pages/posts";
 import DetailDataFetch from "@/pages/posts/detail";
 import { setAxiosConfig } from "@/utils/api/axiosWithConfig";
-import { useToken } from "@/utils/contexts/token-context";
+import { useToken } from "@/utils/states/contexts/token-context";
 
 export default function Router() {
+  const { token, theme } = useSelector((state) => state.data);
   // TODO: change this when authentication learned
-  const { token } = useToken();
+  // const { token } = useToken();
 
   useEffect(() => {
     setAxiosConfig("", "https://jsonplaceholder.typicode.com");
-  }, []);
+  }, [token]);
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
 
   const router = createBrowserRouter([
     {

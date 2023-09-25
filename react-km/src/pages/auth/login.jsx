@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import React from "react";
 import * as z from "zod";
@@ -7,7 +8,8 @@ import * as z from "zod";
 import Layout from "@/components/layout";
 import { Input } from "@/components/input";
 import Button from "@/components/button";
-import { useToken } from "@/utils/contexts/token-context";
+import { useToken } from "@/utils/states/contexts/token-context";
+import { handleAuth } from "@/utils/states/redux/reducers/reducer";
 
 const schema = z.object({
   email: z.string().email().min(1, { message: "Email is required" }),
@@ -15,8 +17,10 @@ const schema = z.object({
 });
 
 export default function Login() {
-  const { token, setToken } = useToken();
+  // const { token, setToken } = useToken();
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -27,7 +31,8 @@ export default function Login() {
   });
 
   function handleLogin(data) {
-    setToken(JSON.stringify(data));
+    // setToken(JSON.stringify(data));
+    dispatch(handleAuth({ token: JSON.stringify(data), isLoggedIn: true }));
     navigate("/");
   }
 
