@@ -1,50 +1,23 @@
-import React from "react";
 import clsx from "clsx";
 
-/**
- *
- * @param {{
- * label: string,
- * onChange: Function,
- * type: string,
- * placeholder: string,
- * value: string,
- * defaultValue: string
- * register: Function,
- * name: string,
- * error: string
- * accept: string
- * }} props Props for the component
- */
 function Input(props) {
-  const {
-    label,
-    onChange,
-    type,
-    placeholder,
-    value,
-    defaultValue,
-    register,
-    name,
-    error,
-    accept,
-  } = props;
+  const { label, id, error, register, name } = props;
 
   return (
-    <div className="flex flex-col">
-      <label>{label}</label>
+    <div className="flex flex-col mb-4">
+      <label
+        className="text-black dark:text-white tracking-wider mb-3"
+        htmlFor={id}
+      >
+        {label}
+      </label>
       <input
         className={clsx(
-          "border-2 p-2 rounded-md border-red-500",
-          !error && "!border-blue-800"
+          "border rounded-lg bg-slate-200 dark:bg-neutral-600 border-red-500 text-black dark:text-white p-2 focus:outline-none focus:border-slate-200 focus:ring-1 focus:ring-slate-200 w-full",
+          !error && "border-slate-200"
         )}
-        value={value}
-        defaultValue={defaultValue}
-        onChange={onChange}
-        type={type}
-        placeholder={placeholder}
-        accept={accept}
         {...(register ? register(name) : {})}
+        {...props}
       />
       {error && (
         <label className="label">
@@ -57,44 +30,63 @@ function Input(props) {
   );
 }
 
-/**
- *
- * @param {{
- * label: string,
- * onChange:
- * function,
- * placeholder: string,
- * value: string,
- * options: Array,
- * register: Function,
- * name: string,
- * error: string
- * }} props Props for the component
- */
-function Select(props) {
-  const {
-    label,
-    placeholder,
-    value,
-    onChange,
-    options = [],
-    register,
-    name,
-    error,
-  } = props;
+function TextArea(props) {
+  const { label, id, error, register, name } = props;
 
   return (
-    <div className="flex flex-col">
-      <label>{label}</label>
-      <select
-        className="border-2 rounded-md"
-        onChange={onChange}
-        value={value}
-        {...(register ? register(name) : {})}
+    <div className="flex flex-col mb-4">
+      <label
+        className="text-black dark:text-white tracking-wider mb-3"
+        htmlFor={id}
       >
-        <option disabled>{placeholder}</option>
+        {label}
+      </label>
+      <textarea
+        className={clsx(
+          "border rounded-lg bg-slate-200 dark:bg-neutral-600 border-red-500 text-black dark:text-white p-2 focus:outline-none focus:border-slate-200 focus:ring-1 focus:ring-slate-200 w-full",
+          !error && "border-slate-200"
+        )}
+        {...(register ? register(name) : {})}
+        {...props}
+      />
+      {error && (
+        <label className="label">
+          <span className="break-words text-sm font-light text-red-500">
+            {error}
+          </span>
+        </label>
+      )}
+    </div>
+  );
+}
+
+function Select(props) {
+  const { label, placeholder, id, error, options, register, name } = props;
+
+  return (
+    <div className="flex flex-col mb-4">
+      <label
+        className="text-black dark:text-white tracking-wider mb-3"
+        htmlFor={id}
+      >
+        {label}
+      </label>
+      <select
+        className={clsx(
+          "border rounded-lg bg-slate-200 dark:bg-neutral-600 border-red-500 text-black dark:text-white p-2 focus:outline-none focus:border-slate-200 focus:ring-1 focus:ring-slate-200 w-full",
+          !error && "border-slate-200"
+        )}
+        defaultValue=""
+        {...(register ? register(name) : {})}
+        {...props}
+      >
+        <option disabled value="">
+          {placeholder}
+        </option>
         {options.map((option) => (
-          <option key={option}>{option}</option>
+          <option key={option} value={option}>
+            {option}
+          </option>
         ))}
       </select>
       {error && (
@@ -108,48 +100,30 @@ function Select(props) {
   );
 }
 
-/**
- *
- * @param {{
- * label: string,
- * onChange: Function,
- * type: string,
- * placeholder: string,
- * value: string,
- * defaultValue: string,
- * register: Function,
- * name: string,
- * error: string
- * }} props Props for the component
- */
-function TextArea(props) {
-  const {
-    label,
-    onChange,
-    type,
-    placeholder,
-    value,
-    defaultValue,
-    register,
-    name,
-    error,
-  } = props;
+function RadioGroup(props) {
+  const { label, error, options, register, name } = props;
 
   return (
-    <div className="flex flex-col">
-      <label>{label}</label>
-      <textarea
-        className={clsx(
-          "border-2 p-2 rounded-md border-red-500",
-          !error && "!border-blue-800"
-        )}
-        value={value}
-        defaultValue={defaultValue}
-        onChange={onChange}
-        type={type}
-        placeholder={placeholder}
-        {...(register ? register(name) : {})}
-      />
+    <div className="flex flex-col mb-4" aria-label={props["aria-label"]}>
+      <label className="text-black dark:text-white tracking-wider mb-3">
+        {label}
+      </label>
+      {options.map((option) => (
+        <div key={option.id} className="flex gap-3">
+          <input
+            type="radio"
+            value={option.label}
+            id={option.id}
+            {...(register ? register(name) : {})}
+          />
+          <label
+            className="text-black dark:text-white tracking-wider"
+            htmlFor={option.id}
+          >
+            {option.label}
+          </label>
+        </div>
+      ))}
       {error && (
         <label className="label">
           <span className="break-words text-sm font-light text-red-500">
@@ -161,32 +135,4 @@ function TextArea(props) {
   );
 }
 
-/**
- *
- * @param {{
- * label: string,
- * onChange: Function,
- * value: string,
- * register: Function,
- * name: string,
- * error: string
- * }} props Props for the component
- */
-function Radio(props) {
-  const { label, onChange, value, register, name } = props;
-
-  return (
-    <>
-      <input
-        type="radio"
-        value={value}
-        onChange={onChange}
-        {...(register ? register(name) : {})}
-      />
-      <label>{label}</label>
-    </>
-  );
-}
-
-export { Input, Select, TextArea, Radio }; // named export
-// export default Input // export default
+export { Input, TextArea, Select, RadioGroup };

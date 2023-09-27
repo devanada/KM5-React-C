@@ -3,9 +3,9 @@ import { useSelector, useDispatch } from "react-redux";
 import "@/styles/App.css";
 
 import Layout from "@/components/layout";
-import { Input, Radio, Select } from "@/components/input";
+import { Input, Select } from "@/components/input";
 import Button from "@/components/button";
-import { TableProduct } from "@/components/table";
+import Table from "@/components/table";
 import { article } from "@/utils/constants/article";
 import { setProducts } from "@/utils/states/redux/reducers/reducer";
 
@@ -115,7 +115,7 @@ function CreateProduct1() {
         />
         <Button label="Submit" type="submit" />
       </form>
-      <TableProduct
+      <Table
         headers={["No", "Product Name", "Product Category", "Product Price"]}
         datas={products}
         isReady={true}
