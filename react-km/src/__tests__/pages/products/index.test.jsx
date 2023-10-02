@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 
-import { render, screen, within, fireEvent } from "@/__tests__/utils";
+import { Render, screen, within, fireEvent } from "@/__tests__/utils";
 
 import App from "@/pages/products";
 
@@ -16,7 +16,7 @@ const productInput = [
 
 describe("Index Product Page", () => {
   beforeEach(() => {
-    render(<App />);
+    Render(<App />);
   });
 
   describe("Renders the page", () => {
