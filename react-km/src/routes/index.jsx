@@ -1,22 +1,19 @@
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Navigate,
-} from "react-router-dom";
-import { useSelector } from "react-redux";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useEffect } from "react";
 
 import Index from "@/pages";
 import Login from "@/pages/auth/login";
-import CreateProduct from "@/pages/products/create-product";
 import CreateProductNew from "@/pages/products";
 import DetailProduct from "@/pages/products/detail";
 import DataFetch from "@/pages/posts";
 import DetailDataFetch from "@/pages/posts/detail";
 import { setAxiosConfig } from "@/utils/api/axiosWithConfig";
-import { useToken } from "@/utils/states/contexts/token-context";
 
 export default function Router() {
+  useEffect(() => {
+    setAxiosConfig("", "https://651516e3dc3282a6a3cdd60a.mockapi.io/api/v1");
+  }, []);
+
   const router = createBrowserRouter([
     {
       path: "/",

@@ -1,13 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
-import { useState } from "react";
 import * as z from "zod";
 
 import { Input, RadioGroup, Select, TextArea } from "@/components/input";
 import Layout from "@/components/layout";
 import Button from "@/components/button";
 import Table from "@/components/table";
+import { getProducts } from "@/utils/api/products/api";
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -75,6 +76,20 @@ export default function Index() {
     resolver: zodResolver(schema),
   });
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
+    try {
+      const result = await getProducts();
+      console.log(result);
+      setProducts(result);
+    } catch (error) {
+      console.log(error.toString());
+    }
+  }
+
   function onSubmit(data) {
     const newData = { id: uuidv4(), ...data };
     const dupeArr = [...products, newData];
@@ -128,7 +143,7 @@ export default function Index() {
           aria-label="input-product-category"
           label="Product Category"
           name="productCategory"
-          options={["Food", "Beverage"]}
+          options={["Electronics", "Furniture", ["Appliance"]]}
           placeholder="Choose..."
           register={register}
           error={errors.productCategory?.message}
