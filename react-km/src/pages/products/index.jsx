@@ -1,14 +1,20 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { v4 as uuidv4 } from "uuid";
+import { IoPencil, IoTrash } from "react-icons/io5";
 import * as z from "zod";
 
 import { Input, RadioGroup, Select, TextArea } from "@/components/input";
 import Layout from "@/components/layout";
 import Button from "@/components/button";
 import Table from "@/components/table";
-import { getProducts } from "@/utils/api/products/api";
+import Swal from "@/utils/swal";
+import {
+  createProduct,
+  deleteProduct,
+  getProducts,
+  updateProduct,
+} from "@/utils/api/products/api";
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -44,37 +50,104 @@ const schema = z.object({
     .string()
     .min(1, { message: "Please enter a valid additional description" }),
   productPrice: z
-    .string()
+    .number()
     .min(1, { message: "Please enter a valid product price" }),
 });
 
 export default function Index() {
   const [selectedId, setSelectedId] = useState("");
   const [products, setProducts] = useState([]);
-  const [radioOption] = useState([
-    {
-      id: "freshness-new",
-      label: "Brand New",
-    },
-    {
-      id: "freshness-second",
-      label: "Second Hand",
-    },
-    {
-      id: "freshness-refurbished",
-      label: "Refurbished",
-    },
-  ]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     reset,
     setValue,
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(schema),
+    defaultValues: {
+      productFreshness: "",
+      productPrice: 0,
+    },
   });
+
+  const columns = useMemo(
+    () => [
+      {
+        header: "No",
+        accessorKey: "id",
+        cell: (info) => info.getValue(),
+        footer: (props) => props.column.id,
+      },
+      {
+        header: "Product Name",
+        accessorKey: "productName",
+        cell: (info) => info.getValue(),
+        footer: (props) => props.column.id,
+      },
+      {
+        header: "Product Category",
+        accessorKey: "productCategory",
+        cell: (info) => info.getValue(),
+        footer: (props) => props.column.id,
+      },
+      {
+        header: "Image of Product",
+        accessorKey: "image",
+        cell: (info) => (
+          <div className="flex items-center space-x-3">
+            <div className="avatar">
+              <div className="mask mask-squircle w-12 h-12">
+                <img
+                  src={info.row.original.image}
+                  alt={info.row.original.productName}
+                />
+              </div>
+            </div>
+            <p>{info.row.original.image}</p>
+          </div>
+        ),
+        footer: (props) => props.column.id,
+      },
+      {
+        header: "Product Freshness",
+        accessorKey: "productFreshness",
+        cell: (info) => info.getValue(),
+        footer: (props) => props.column.id,
+      },
+      {
+        header: "Additional Description",
+        accessorKey: "additionalDescription",
+        cell: (info) => info.getValue(),
+        footer: (props) => props.column.id,
+      },
+      {
+        header: "Product Price",
+        accessorKey: "productPrice",
+        cell: (info) => info.getValue(),
+        footer: (props) => props.column.id,
+      },
+      {
+        header: "",
+        accessorKey: "actionEdit",
+        cell: (info) => (
+          <IoPencil onClick={() => onClickEdit(info.row.original)} />
+        ),
+        footer: (props) => props.column.id,
+      },
+      {
+        header: "",
+        accessorKey: "actionDelete",
+        cell: (info) => (
+          <IoTrash onClick={() => onClickDelete(info.row.original.id)} />
+        ),
+        footer: (props) => props.column.id,
+      },
+    ],
+    []
+  );
 
   useEffect(() => {
     fetchData();
@@ -83,30 +156,49 @@ export default function Index() {
   async function fetchData() {
     try {
       const result = await getProducts();
-      console.log(result);
       setProducts(result);
     } catch (error) {
       console.log(error.toString());
     }
   }
 
-  function onSubmit(data) {
-    const newData = { id: uuidv4(), ...data };
-    const dupeArr = [...products, newData];
-    setProducts(dupeArr);
-    reset();
+  async function onSubmit(data) {
+    try {
+      await createProduct(data);
+      Swal.fire({
+        title: "Success",
+        text: "Successfully created a new product",
+        showCancelButton: false,
+      });
+      reset();
+      fetchData();
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: error.message,
+        showCancelButton: false,
+      });
+    }
   }
 
-  function onSubmitEdit(data) {
-    const newData = products.map((product) => {
-      if (product.id === selectedId) {
-        return { id: selectedId, ...data };
-      }
-      return product;
-    });
-    setProducts(newData);
-    setSelectedId("");
-    reset();
+  async function onSubmitEdit(data) {
+    try {
+      await updateProduct({ ...data, id: selectedId });
+      Swal.fire({
+        title: "Success",
+        text: "Successfully updated the product",
+        showCancelButton: false,
+      });
+      setSelectedId("");
+      reset();
+      fetchData();
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: error.message,
+        showCancelButton: false,
+      });
+    }
   }
 
   function onClickEdit(data) {
@@ -119,9 +211,22 @@ export default function Index() {
     setValue("productPrice", data.productPrice);
   }
 
-  function onClickDelete(data) {
-    const newData = products.filter((product) => product.id !== data.id);
-    setProducts(newData);
+  async function onClickDelete(id_product) {
+    try {
+      await deleteProduct(id_product);
+      Swal.fire({
+        title: "Success",
+        text: "Successfully deleted the product",
+        showCancelButton: false,
+      });
+      fetchData();
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: error.message,
+        showCancelButton: false,
+      });
+    }
   }
 
   return (
@@ -143,7 +248,7 @@ export default function Index() {
           aria-label="input-product-category"
           label="Product Category"
           name="productCategory"
-          options={["Electronics", "Furniture", ["Appliance"]]}
+          options={["Electronics", "Furniture", "Appliance"]}
           placeholder="Choose..."
           register={register}
           error={errors.productCategory?.message}
@@ -162,7 +267,7 @@ export default function Index() {
           aria-label="input-product-freshness"
           label="Product Freshness"
           name="productFreshness"
-          options={radioOption}
+          options={["Brand New", "Second Hand", "Refurbished"]}
           register={register}
           error={errors.productFreshness?.message}
         />
@@ -189,23 +294,10 @@ export default function Index() {
           aria-label="btn-submit"
           label="Submit"
           type="submit"
+          disabled={isSubmitting}
         />
       </form>
-      <Table
-        datas={products}
-        isReady={true}
-        headers={[
-          "No",
-          "Product Name",
-          "Product Category",
-          "Image of Product",
-          "Product Freshness",
-          "Additional Description",
-          "Product Price",
-        ]}
-        onEditClick={(data) => onClickEdit(data)}
-        onDeleteClick={(data) => onClickDelete(data)}
-      />
+      <Table datas={products} columns={columns} />
     </Layout>
   );
 }

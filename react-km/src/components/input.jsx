@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
 function Input(props) {
-  const { label, id, error, register, name } = props;
+  const { label, id, error, register, name, type } = props;
 
   return (
     <div className="flex flex-col mb-4">
@@ -16,7 +16,11 @@ function Input(props) {
           "border rounded-lg bg-slate-200 dark:bg-neutral-600 border-red-500 text-black dark:text-white p-2 focus:outline-none focus:border-slate-200 focus:ring-1 focus:ring-slate-200 w-full",
           !error && "border-slate-200"
         )}
-        {...(register ? register(name) : {})}
+        {...(register
+          ? register(name, {
+              valueAsNumber: type === "number" ? true : false,
+            })
+          : {})}
         {...props}
       />
       {error && (
@@ -109,18 +113,18 @@ function RadioGroup(props) {
         {label}
       </label>
       {options.map((option) => (
-        <div key={option.id} className="flex gap-3">
+        <div key={option} className="flex gap-3">
           <input
             type="radio"
-            value={option.label}
-            id={option.id}
+            value={option}
+            id={option}
             {...(register ? register(name) : {})}
           />
           <label
             className="text-black dark:text-white tracking-wider"
-            htmlFor={option.id}
+            htmlFor={option}
           >
-            {option.label}
+            {option}
           </label>
         </div>
       ))}
