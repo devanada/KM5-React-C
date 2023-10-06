@@ -1,14 +1,39 @@
-import { createContext, useState, useMemo, useContext } from "react";
+import {
+  createContext,
+  useState,
+  useMemo,
+  useContext,
+  useCallback,
+} from "react";
 
-const TokenContext = createContext("");
+const contextValue = {
+  token: "",
+  changeToken: (data) => {},
+};
+
+const TokenContext = createContext(contextValue);
 
 function TokenProvider({ children }) {
-  const [token, setToken] = useState("");
+  const initialValue = localStorage.getItem("user") ?? "";
+  const [token, setToken] = useState(initialValue);
+
+  const changeToken = useCallback(
+    (data) => {
+      const newData = data ?? "";
+      if (data) {
+        localStorage.setItem("user", newData);
+      } else {
+        localStorage.removeItem("user");
+      }
+      setToken(newData);
+    },
+    [user]
+  );
 
   const tokenContextValue = useMemo(
     () => ({
       token,
-      setToken,
+      changeToken,
     }),
     [token]
   );

@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import { useEffect } from "react";
 
 import Index from "@/pages";
@@ -8,8 +12,11 @@ import DetailProduct from "@/pages/products/detail";
 import DataFetch from "@/pages/posts";
 import DetailDataFetch from "@/pages/posts/detail";
 import { setAxiosConfig } from "@/utils/api/axiosWithConfig";
+import { useToken } from "@/utils/states/contexts/token-context";
 
 export default function Router() {
+  const { token } = useToken();
+
   useEffect(() => {
     setAxiosConfig("", "https://651516e3dc3282a6a3cdd60a.mockapi.io/api/v1");
   }, []);
@@ -21,15 +28,15 @@ export default function Router() {
     },
     {
       path: "/login",
-      element: <Login />,
+      element: token === "" ? <Login /> : <Navigate to="/" />,
     },
     {
       path: "/products",
-      element: <CreateProductNew />,
+      element: token === "" ? <Navigate to="/login" /> : <CreateProductNew />,
     },
     {
       path: "/products/:id",
-      element: <DetailProduct />,
+      element: token === "" ? <Navigate to="/login" /> : <DetailProduct />,
     },
     {
       path: "/posts",
