@@ -26,6 +26,7 @@ export default function Navbar() {
           <Link to="/login">Login</Link>
         ) : (
           <>
+            <Link to="/openai">OpenAI</Link>
             <Link to="/products">Products</Link>
             <p className="cursor-pointer" onClick={() => handleLogout()}>
               Logout

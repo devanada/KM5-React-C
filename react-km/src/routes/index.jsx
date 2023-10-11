@@ -11,6 +11,7 @@ import CreateProductNew from "@/pages/products";
 import DetailProduct from "@/pages/products/detail";
 import DataFetch from "@/pages/posts";
 import DetailDataFetch from "@/pages/posts/detail";
+import AIPage from "@/pages/openai";
 import { setAxiosConfig } from "@/utils/api/axiosWithConfig";
 import { useToken } from "@/utils/states/contexts/token-context";
 
@@ -45,6 +46,10 @@ export default function Router() {
     {
       path: "/posts/:id_post", // <~ path param
       element: <DetailDataFetch />,
+    },
+    {
+      path: "/openai",
+      element: <AIPage />,
     },
     {
       path: "*",

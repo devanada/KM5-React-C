@@ -4,7 +4,7 @@ function Input(props) {
   const { label, id, error, register, name, type } = props;
 
   return (
-    <div className="flex flex-col mb-4">
+    <div className="flex flex-col mb-4 w-full">
       <label
         className="text-black dark:text-white tracking-wider mb-3"
         htmlFor={id}
